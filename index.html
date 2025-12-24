@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MATLAB 3D Contour</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+
+<div id="plot" style="width:100%;height:100vh;"></div>
+
+<script>
+fetch('contourData.json')
+  .then(r => r.json())
+  .then(d => {
+
+    const data = [{
+      type: 'surface',      // closest to contour3
+      x: d.X,
+      y: d.Y,
+      z: d.Z,
+      contours: {
+        z: {
+          show: true,
+          usecolormap: true,
+          highlightcolor: "#42f462",
+          project: { z: true }
+        }
+      }
+    }];
+
+    const layout = {
+      title: '3D Contour (MATLAB)',
+      scene: {
+        xaxis: { title: 'X' },
+        yaxis: { title: 'Y' },
+        zaxis: { title: 'Z' }
+      }
+    };
+
+    Plotly.newPlot('plot', data, layout);
+  });
+</script>
+
+</body>
+</html>
