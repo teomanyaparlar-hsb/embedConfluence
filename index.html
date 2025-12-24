@@ -1,21 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <title>MATLAB 3D Contour</title>
+
+  <!-- Responsive layout -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Plotly -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: Arial, sans-serif;
+    }
+    #plot {
+      width: 100%;
+      height: 100vh;
+    }
+  </style>
 </head>
+
 <body>
 
-<div id="plot" style="width:100%;height:100vh;"></div>
+<div id="plot"></div>
 
 <script>
 fetch('contourData.json')
-  .then(r => r.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to load contourData.json');
+    }
+    return response.json();
+  })
   .then(d => {
 
+    /* --- Plot data --- */
     const data = [{
-      type: 'surface',      // closest to contour3
+      type: 'surface',                 // Closest to MATLAB contour3
       x: d.X,
       y: d.Y,
       z: d.Z,
@@ -23,22 +49,60 @@ fetch('contourData.json')
         z: {
           show: true,
           usecolormap: true,
-          highlightcolor: "#42f462",
           project: { z: true }
         }
       }
     }];
 
+    /* --- Layout & metadata annotations --- */
     const layout = {
       title: '3D Contour (MATLAB)',
       scene: {
         xaxis: { title: 'X' },
         yaxis: { title: 'Y' },
         zaxis: { title: 'Z' }
-      }
+      },
+      margin: {
+        l: 0,
+        r: 0,
+        t: 50,
+        b: 80
+      },
+      annotations: [
+        {
+          text: 'Generated with ' + d.metadata.tool,
+          x: 0,
+          y: -0.18,
+          xref: 'paper',
+          yref: 'paper',
+          showarrow: false,
+          font: { size: 10 },
+          align: 'left'
+        },
+        {
+          text: 'Created: ' + d.metadata.created_at,
+          x: 1,
+          y: -0.18,
+          xref: 'paper',
+          yref: 'paper',
+          showarrow: false,
+          font: { size: 10 },
+          align: 'right'
+        }
+      ]
     };
 
-    Plotly.newPlot('plot', data, layout);
+    /* --- Render plot --- */
+    Plotly.newPlot('plot', data, layout, {
+      responsive: true,
+      displaylogo: false
+    });
+
+  })
+  .catch(error => {
+    console.error(error);
+    document.getElementById('plot').innerHTML =
+      '<p style="padding:20px;color:red;">Error loading plot data.</p>';
   });
 </script>
 

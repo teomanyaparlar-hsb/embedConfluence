@@ -13,13 +13,19 @@ ylabel('Y')
 zlabel('Z')
 title('Arbitrary 3D Contour Plot')
 
-% Add standardized figure metadata
+% Add standardized figure metadata (visible on MATLAB figure)
 addFigureMetadata;
 
-% Export data for HTML / Plotly
+% ---- Metadata for export (authoritative) ----
+metadata.created_at = datestr(datetime('now','TimeZone','UTC'), ...
+                              'yyyy-mm-dd HH:MM:ss UTC');
+metadata.tool = ['MATLAB ' version];
+
+% ---- Export data for HTML / Plotly ----
 plotData.X = x;
 plotData.Y = y;
 plotData.Z = z;
+plotData.metadata = metadata;
 
 fid = fopen('contourData.json','w');
 fprintf(fid, '%s', jsonencode(plotData));
