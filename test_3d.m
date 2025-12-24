@@ -6,13 +6,17 @@ z = sin(x).*cos(y) + 0.1*(x.^2 + y.^2);
 
 % Create 3D contour plot
 figure
-contour3(x, y, z, 20)   % 20 contour levels
+contour3(x, y, z, 20)
 grid on
 xlabel('X')
 ylabel('Y')
 zlabel('Z')
 title('Arbitrary 3D Contour Plot')
 
+% Add standardized figure metadata
+addFigureMetadata;
+
+% Export data for HTML / Plotly
 plotData.X = x;
 plotData.Y = y;
 plotData.Z = z;
